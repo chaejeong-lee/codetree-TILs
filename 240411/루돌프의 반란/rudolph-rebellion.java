@@ -4,29 +4,14 @@ import java.io.*;
 public class Main {
 
     static class Point implements Comparable<Point> {
-        int r, c;
-
-        public Point (int r, int c){
-            this.r = r;
-            this.c = c;
-        }
-
-        @Override
-        public int compareTo(Point o){
-            if(o.r == r) return o.c - c;
-            return o.r - r;
-        }
-    }
-
-    static class Santa implements Comparable<Santa> {
         int num, r, c, d;
 
-        public Santa(int r, int c){
+        public Point(int r, int c){
             this.r = r;
             this.c = c;
         }
         
-        public Santa (int num, int r, int c, int d){
+        public Point (int num, int r, int c, int d){
             this.num = num;
             this.r = r;
             this.c = c;
@@ -34,7 +19,7 @@ public class Main {
         }
 
         @Override
-        public int compareTo(Santa o){
+        public int compareTo(Point o){
             if(this.d == o.d){
                 if(this.r == r){
                     return this.c - o.c;
@@ -48,7 +33,7 @@ public class Main {
     private static int N, M, P, C, D;
     private static Point rudolfPoint;
     private static int[][] map;
-    private static Santa[] santa;
+    private static Point[] santa;
     private static int[] score;
     private static boolean[] santaDead;
     private static int[] santaStun;
@@ -71,7 +56,7 @@ public class Main {
         rudolfPoint = new Point(Integer.parseInt(st.nextToken())-1,Integer.parseInt(st.nextToken())-1);  // startPoint: 루돌프의 시작점
         map[rudolfPoint.r][rudolfPoint.c] = -1;   // 루돌프의 위치
 
-        santa = new Santa[P + 1];   // santa: 산타의 위치 등 정보
+        santa = new Point[P + 1];   // santa: 산타의 위치 등 정보
         santaDead = new boolean[P + 1]; // santaDead: 산타 죽었는지 유무
         score = new int[P+1];           // score: 산타 점수
         santaStun = new int[P + 1];     // santaStun: 부딪혀서 스턴 걸렸느지..
@@ -81,7 +66,7 @@ public class Main {
             int santaNum = Integer.parseInt(st.nextToken());
             int santaR = Integer.parseInt(st.nextToken())-1;
             int santaC = Integer.parseInt(st.nextToken())-1;
-            santa[santaNum] = new Santa(santaR, santaC);
+            santa[santaNum] = new Point(santaR, santaC);
             map[santaR][santaC] = santaNum;
         }
 
@@ -120,7 +105,7 @@ public class Main {
     // 1. 루돌프의 움직임
     private static void rudolfMove() {
         // 가장 근접한 산타 찾기
-        Santa nearSanta = nearBySanta();
+        Point nearSanta = nearBySanta();
 
         // 루돌프가 원래 있던 자리는 0으로
         map[rudolfPoint.r][rudolfPoint.c] = 0;
@@ -156,16 +141,16 @@ public class Main {
     }
 
     // 1-1. 가장 근접한 산타 찾기
-    private static Santa nearBySanta() {
-        ArrayList<Santa> list = new ArrayList<>();
+    private static Point nearBySanta() {
+        ArrayList<Point> list = new ArrayList<>();
 
         for(int i=1;i<=P;i++){
             if(santaDead[i]) continue;
 
-            Santa s = santa[i];
+            Point s = santa[i];
 
             int dis = (int)(Math.pow(rudolfPoint.r-s.r, 2) + Math.pow(rudolfPoint.c - s.c, 2));
-            list.add(new Santa(i, s.r, s.c, dis));
+            list.add(new Point(i, s.r, s.c, dis));
         }
         Collections.sort(list);
 
@@ -180,7 +165,7 @@ public class Main {
             }
 
             map[r][c] = num;
-            santa[num] = new Santa(r, c);
+            santa[num] = new Point(r, c);
         }else{
             santaDead[num] = true;
         }
@@ -192,7 +177,7 @@ public class Main {
             // 기절 or 스턴 => 움직이지X
             if(santaDead[i] || santaStun[i] != 0) continue;
 
-            Santa cur = santa[i];
+            Point cur = santa[i];
 
             // 현재 위치에서 루돌프까지의 최소 거리
             int min = (int)(Math.pow(rudolfPoint.r - cur.r, 2) + Math.pow(rudolfPoint.c - cur.c, 2));
