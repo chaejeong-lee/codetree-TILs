@@ -198,26 +198,28 @@ public class Main {
                 }
             }
 
-            // 원래 산타가 있던 곳은 빈칸으로 변경
-            map[cur.r][cur.c] = 0;
+            if(dir != -1){
+                // 원래 산타가 있던 곳은 빈칸으로 변경
+                map[cur.r][cur.c] = 0;
 
-            cur.r += dr[dir];
-            cur.c += dc[dir];
+                cur.r += dr[dir];
+                cur.c += dc[dir];
 
-            // 이동한 칸에 루돌프가있는 경우
-            if(cur.r == rudolfPoint.r && cur.c == rudolfPoint.c){
-                // 충돌한 산타 점수 D점 증가 + stun 값 증가
-                score[i] += D;
-                santaStun[i] = 2;
+                // 이동한 칸에 루돌프가있는 경우
+                if(cur.r == rudolfPoint.r && cur.c == rudolfPoint.c){
+                    // 충돌한 산타 점수 D점 증가 + stun 값 증가
+                    score[i] += D;
+                    santaStun[i] = 2;
 
-                // 산타가 밀려날 위치
-                int nr = cur.r + (-dr[dir]*D);
-                int nc = cur.c + (-dc[dir]*D);
+                    // 산타가 밀려날 위치
+                    int nr = cur.r + (-dr[dir]*D);
+                    int nc = cur.c + (-dc[dir]*D);
 
-                // 밀려난 자리에 산타가 있을 경우 상호작용 필요
-                interaction(i, nr, nc, -dr[dir], -dc[dir]);
-            } else {
-                map[cur.r][cur.c] = i;
+                    // 밀려난 자리에 산타가 있을 경우 상호작용 필요
+                    interaction(i, nr, nc, -dr[dir], -dc[dir]);
+                } else {
+                    map[cur.r][cur.c] = i;
+                }
             }
         }
     }
@@ -244,15 +246,4 @@ public class Main {
     private static boolean isRange(int r, int c){
         return r >= 0 && r<N && c>=0 && c<N;
     }
-
-    // private static void printMap() {
-    //     System.out.println("*******************************");
-    //     for(int i=0;i<N;i++){
-    //         for(int j=0;j<N;j++){
-    //             System.out.print(map[i][j]+" ");
-    //         }
-    //         System.out.println();
-    //     }
-    //     System.out.println("*******************************");
-    // }
 }
