@@ -21,10 +21,10 @@ public class Main {
         @Override
         public int compareTo(Point o){
             if(this.d == o.d){
-                if(this.r == r){
-                    return this.c - o.c;
+                if(this.r == o.r){
+                    return o.c - this.c;
                 }
-                return this.r - o.r;
+                return o.r - this.r;
             }
             return this.d - o.d;
         }
@@ -61,7 +61,7 @@ public class Main {
         score = new int[P+1];           // score: 산타 점수
         santaStun = new int[P + 1];     // santaStun: 부딪혀서 스턴 걸렸느지..
 
-        for(int p=0;p<P;p++){
+        for(int p=1;p<=P;p++){
             st = new StringTokenizer(br.readLine());
             int santaNum = Integer.parseInt(st.nextToken());
             int santaR = Integer.parseInt(st.nextToken())-1;
@@ -76,6 +76,7 @@ public class Main {
             if(isFinished()){
                 break;
             }
+
             // 1. 루돌프의 움직
             rudolfMove();
             // 2. 산타의 움직임
@@ -175,7 +176,7 @@ public class Main {
     private static void santaMove() {
         for(int i=1;i<=P;i++){
             // 기절 or 스턴 => 움직이지X
-            if(santaDead[i] || santaStun[i] != 0) continue;
+            if(santaDead[i] || santaStun[i] > 0) continue;
 
             Point cur = santa[i];
 
