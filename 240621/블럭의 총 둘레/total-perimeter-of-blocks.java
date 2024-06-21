@@ -16,13 +16,13 @@ public class Main {
         StringTokenizer st = null;
 
         N = Integer.parseInt(br.readLine());
-        map = new int[MAX_SIZE][MAX_SIZE];
+        map = new int[MAX_SIZE+1][MAX_SIZE+1];
 
         for(int i=0;i<N;i++){
             st = new StringTokenizer(br.readLine()," ");
             int r = Integer.parseInt(st.nextToken());
             int c = Integer.parseInt(st.nextToken());
-            map[r-1][c-1] = 1;
+            map[r][c] = 1;
         }
         bfs(0, 0);
         System.out.println(answer);
@@ -46,15 +46,6 @@ public class Main {
     }
 
     private static boolean isRange(int r, int c) {
-        return (0<=r && r<MAX_SIZE && 0<=c && c<MAX_SIZE);
-    }
-
-    private static void printMap() {
-        for(int i=0;i<10;i++) {
-            for(int j=0;j<10;j++) {
-                System.out.print(map[i][j]+" ");
-            }
-            System.out.println();
-        }
+        return (0<=r && r<=MAX_SIZE && 0<=c && c<=MAX_SIZE);
     }
 }
