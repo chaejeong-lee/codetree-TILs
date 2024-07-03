@@ -24,7 +24,7 @@ public class Main {
             if(sum1 != sum2) {
                 return sum1 - sum2;
             }
-            return o1.p - o2.p;
+            return o2.p - o1.p;
         });
 
         for(int i=0;i<N;i++) {
@@ -49,6 +49,7 @@ public class Main {
                 curSum = gift.p + gift.s;
 
                 if(sum + curSum <= B) {
+                    sum += curSum;
                     cnt++;
                 }
                 break;
