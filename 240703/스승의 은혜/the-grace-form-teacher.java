@@ -49,7 +49,6 @@ public class Main {
                 curSum = gift.p + gift.s;
 
                 if(sum + curSum <= B) {
-                    sum += curSum;
                     cnt++;
                 }
                 break;
