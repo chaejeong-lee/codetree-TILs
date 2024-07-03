@@ -37,7 +37,8 @@ public class Main {
         int sum = 0;
         int cnt = 0;
 
-        for(Gift gift: pq) {
+        while(!pq.isEmpty()) {
+            Gift gift = pq.poll();
             int curSum = gift.p + gift.s;
 
             if(sum + curSum <= B) {
