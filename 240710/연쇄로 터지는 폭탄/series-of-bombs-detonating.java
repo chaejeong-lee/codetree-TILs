@@ -41,16 +41,17 @@ public class Main {
             // 1. 범위 idx 안에 속해야 함
             // 2. 방문한 적이 없어야 한다.
             // 3. 범위 안에 속한 폭탄이 있는 경우 q에 넣기
+            boolean isChanged = false;
             for(int i=0;i<N;i++) {
-                if(0 <= bombBefore && bombAfter < N) {
-                    // System.out.println("cur: " + cur +" / "+bombBefore+" / "+bombAfter);
-                    if(!visited[i] && bombBefore <= bomb[i] && bomb[i] <= bombAfter){
-                        q.add(bomb[i]);
-                        answer++;
-                    }
+                if(!visited[i] && bombBefore <= bomb[i] && bomb[i] <= bombAfter){
+                // System.out.println("cur: " + cur +" / "+bombBefore+" / "+bombAfter);
+                    q.add(bomb[i]);
+                    answer++;
+                    visited[i] = true;
+                    isChanged = true;
                 }
             }
-            bombSize++;
+            if(isChanged) bombSize++;
         }
 
         return answer;
