@@ -3,6 +3,15 @@ import java.util.*;
 
 public class Main {
 
+    public static class Bomb {
+        int cur, bombSize;
+
+        public Bomb (int cur, int bombSize) {
+            this.cur = cur;
+            this.bombSize = bombSize;
+        }
+    }
+
     public static int N;
     public static int[] bomb;
 
@@ -19,40 +28,43 @@ public class Main {
         int answer = 0;
         for(int i=0;i<N;i++) {
             int cnt = solution(i);
+            // System.out.println("~~~~~~~~~~~~~"+cnt+"~~~~~~~~~~~~~");
             answer = Math.max(answer, cnt);
         }
         System.out.println(answer);
     }
 
     public static int solution(int idx) {
-        int bombSize = 1;
+        // System.out.println("==============="+idx+"===============");
         int answer = 1;
 
-        Queue<Integer> q = new LinkedList<>();
+        Queue<Bomb> q = new LinkedList<>();
         boolean[] visited = new boolean[N];
-        q.add(bomb[idx]);
+        q.add(new Bomb(bomb[idx], 1));
         visited[idx]= true;
 
         while(!q.isEmpty()) {
-            int cur = q.poll();
-            int bombBefore = cur - bombSize;
-            int bombAfter = cur + bombSize;
-
+            Bomb cur = q.poll();
+            int bombBefore = cur.cur - cur.bombSize;
+            int bombAfter = cur.cur + cur.bombSize;
+            // System.out.println(bombBefore+" " +bombAfter+"**************");
             // 1. 범위 idx 안에 속해야 함
             // 2. 방문한 적이 없어야 한다.
             // 3. 범위 안에 속한 폭탄이 있는 경우 q에 넣기
             boolean isChanged = false;
             for(int i=0;i<N;i++) {
                 if(!visited[i] && bombBefore <= bomb[i] && bomb[i] <= bombAfter){
-                // System.out.println("cur: " + cur +" / "+bombBefore+" / "+bombAfter);
-                    q.add(bomb[i]);
+                    // System.out.println("cur: " + cur.cur +" / bomb: "+ bomb[i]+" / bombSize : "+cur.bombSize);
+                    q.add(new Bomb(bomb[i], cur.bombSize+1));
                     answer++;
                     visited[i] = true;
-                    isChanged = true;
                 }
             }
-            if(isChanged) bombSize++;
         }
+        // for(int i=0;i<N;i++) {
+        //     System.out.print(visited[i]+" ");
+        // }
+        // System.out.println();
 
         return answer;
     }
