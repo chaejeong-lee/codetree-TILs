@@ -52,6 +52,10 @@ public class Main {
                 add--;
             }
 
+            if(visit[exit]) {
+                visit[exit] = false;
+            }
+
             // 3. 맨 앞 칸에 사람이 x + 안전성 = 0 => 사람 세우기
             if(!visit[start] && movingwalks[start] > 0) {
                 visit[start] = true;
