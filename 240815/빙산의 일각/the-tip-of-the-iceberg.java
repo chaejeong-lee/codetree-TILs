@@ -8,24 +8,28 @@ public class Main {
 
         int[] H = new int[N];
         int maxHeight = 0;
+        int minHeight = Integer.MAX_VALUE;
         int result = 0;
 
         for(int i=0;i<N;i++) {
             H[i] = Integer.parseInt(br.readLine());
             maxHeight = Math.max(maxHeight, H[i]);
+            minHeight = Math.min(minHeight, H[i]);
         }
 
-        for(int i=1; i<maxHeight; i++) {
+        for(int i=minHeight; i<maxHeight; i++) {
             int cnt = 0;
             boolean check = false;
             for(int j=0;j<N;j++) {
-                if(H[j] <= i) {
-                    check = false;
-                    H[j] = 0;
+                if(H[j] > i ) {
+                    if(check) continue;
+                    else {
+                        check = true;
+                        cnt++;
+                    }
                 }
-                else if(!check && i < H[j]) {// 덩어리 시작
-                    check = true;
-                    cnt++;
+                else {
+                    check = false;
                 }
             }
             
