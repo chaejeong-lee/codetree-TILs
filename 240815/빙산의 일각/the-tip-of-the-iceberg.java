@@ -14,22 +14,22 @@ public class Main {
             maxHeight = Math.max(maxHeight, H[i]);
         }
 
-        for(int i=1; i<maxHeight-1; i++) {
+        for(int i=1; i<maxHeight; i++) {
             int cnt = 0;
             boolean check = false;
-            for(int k: H) {
-                if(!check) {
-                    if(k > i) {
-                        check = true;
-                        cnt++;
-                    }
+            for(int j=0;j<N;j++) {
+                if(H[j] <= i) {
+                    check = false;
+                    H[j] = 0;
                 }
-                else {
-                    check = k > i;
+                else if(!check && i < H[j]) {
+                    check = true;
+                    cnt++;
                 }
             }
             
-            result = Math.max(result, cnt);
+            if(cnt <= result) break;
+            else result = cnt;
         }
         System.out.println(result);
     }
