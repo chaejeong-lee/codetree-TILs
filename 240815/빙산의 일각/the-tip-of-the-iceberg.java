@@ -17,13 +17,12 @@ public class Main {
             minHeight = Math.min(minHeight, H[i]);
         }
 
-        for(int i=minHeight; i<=maxHeight; i++) {
+        for(int i=minHeight; i<maxHeight-1; i++) {
             int cnt = 0;
             boolean check = false;
             for(int j=0;j<N;j++) {
-                if(H[j] >= i ) {
-                    if(check) continue;
-                    else {
+                if(H[j] > i ) {
+                    if(!check) {
                         check = true;
                         cnt++;
                     }
