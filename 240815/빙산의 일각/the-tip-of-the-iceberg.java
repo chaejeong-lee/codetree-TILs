@@ -21,7 +21,7 @@ public class Main {
             int cnt = 0;
             boolean check = false;
             for(int j=0;j<N;j++) {
-                if(H[j] > i ) {
+                if(H[j] >= i ) {
                     if(check) continue;
                     else {
                         check = true;
@@ -29,7 +29,6 @@ public class Main {
                     }
                 }
                 else {
-                    H[j] = 0;
                     check = false;
                 }
             }
