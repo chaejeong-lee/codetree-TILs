@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -22,14 +23,13 @@ public class Main {
                     check = false;
                     H[j] = 0;
                 }
-                else if(!check && i < H[j]) {
+                else if(!check && i < H[j]) {// 덩어리 시작
                     check = true;
                     cnt++;
                 }
             }
             
-            if(cnt <= result) break;
-            else result = cnt;
+            if(cnt > result) result = cnt;
         }
         System.out.println(result);
     }
