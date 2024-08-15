@@ -17,7 +17,7 @@ public class Main {
             minHeight = Math.min(minHeight, H[i]);
         }
 
-        for(int i=minHeight; i<maxHeight; i++) {
+        for(int i=minHeight-1; i<maxHeight; i++) {
             int cnt = 0;
             boolean check = false;
             for(int j=0;j<N;j++) {
@@ -29,10 +29,10 @@ public class Main {
                     }
                 }
                 else {
+                    H[j] = 0;
                     check = false;
                 }
             }
-            
             result = Math.max(result, cnt);
         }
         System.out.println(result);
