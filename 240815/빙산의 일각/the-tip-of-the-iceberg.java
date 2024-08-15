@@ -17,7 +17,7 @@ public class Main {
             minHeight = Math.min(minHeight, H[i]);
         }
 
-        for(int i=minHeight-1; i<maxHeight; i++) {
+        for(int i=minHeight-1; i<=maxHeight; i++) {
             int cnt = 0;
             boolean check = false;
             for(int j=0;j<N;j++) {
