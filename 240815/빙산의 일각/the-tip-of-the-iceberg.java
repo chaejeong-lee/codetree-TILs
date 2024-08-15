@@ -29,7 +29,7 @@ public class Main {
                 }
             }
             
-            if(cnt > result) result = cnt;
+            result = Math.max(result, cnt);
         }
         System.out.println(result);
     }
