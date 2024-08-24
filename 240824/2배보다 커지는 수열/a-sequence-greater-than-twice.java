@@ -38,26 +38,18 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
 
         dp = new int[N+1][M+1];
-        for(int i=1; i<M;i++) {
+        for(int i=1; i<=M;i++) {
             dp[1][i] = i;
-            dp[2][i+1] = i;
         }
-        dp[1][M] = M;
 
-        for(int i=3; i<=N;i++) {
+        for(int i=2; i<=N;i++) {
             int start = (int)Math.pow(2, i-1);
             for(int j=start; j<=M;j++) {
-                int diff = (int)Math.pow(2, i-2);
-                dp[i][j] = (dp[i-1][j-diff] + dp[i][j-diff])%MOD;
+                int powNum1 = (int)Math.pow(2, i-1);
+                int powNum2 = (int)Math.pow(2, i-2);
+                dp[i][j] = (dp[i][j-powNum1] + dp[i-1][j-powNum2])%MOD;
             }
         }
-
-// for(int i=0;i<N;i++) {
-//     for(int j=0;j<M;j++) {
-//         System.out.print(dp[i][j]+" ");
-//     }
-//     System.out.println();
-// }
 
         System.out.println(dp[N][M]);
     }
