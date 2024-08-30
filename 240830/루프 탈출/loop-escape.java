@@ -25,8 +25,10 @@ public class Main {
         }
 
         for(int i=1; i<=N;i++) {
-            if(arr[i] != 0 && !isDone[i]) {
-                dfs(i);
+            if(!isDone[i]) {
+                visited[i] = true;
+                isDone[i] = dfs(i);
+                visited[i] = false;
             }
         }
 
@@ -38,19 +40,19 @@ public class Main {
         System.out.println(cnt);
     }
 
-    public static void dfs(int num) {
-        if(arr[num] != 0 && visited[num]) {
-            for(int i=1; i<=N; i++) {
-                if(visited[i]) {
-                    isDone[i] = true;
-                }
-            }
+    public static boolean dfs(int num) {
+        int next = arr[num];
+        if(next == 0) {
+            return false;
         }
-        visited[num] = true;
 
-        if(arr[num] != 0 && !isDone[arr[num]]) {
-            dfs(arr[num]);
+        if(visited[next]) {
+            return true;
         }
-        visited[num] = false;
+        visited[next] = true;
+        isDone[next] = dfs(next);
+        visited[next] = false;
+
+        return isDone[next];
     }
 }
