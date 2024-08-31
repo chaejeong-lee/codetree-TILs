@@ -3,9 +3,8 @@ import java.util.*;
 
 public class Main {
 
-    static int N;
-    static HashSet<String> name;
-    static int answer = 1;
+    static int N, max = 0;
+    static HashMap<String, Integer> name;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -13,21 +12,28 @@ public class Main {
 
         int N = Integer.parseInt(br.readLine());
 
-        st = new StringTokenizer(br.readLine());
-        name = new HashSet<>();
-        for(int i=0; i<3;i++) {
-            name.add(st.nextToken());
-        }
+        name = new HashMap<>();
 
-        for(int i=1;i<N;i++) {
-            st = new StringTokenizer(br.readLine());
-            int cnt = 0;
+        for(int i=0;i<N;i++) {
+            String[] arr = new String[3];
+
+            st = new StringTokenizer(br.readLine(), " ");
             for(int j=0; j<3;j++) {
-                if(name.contains(st.nextToken())) cnt++;
+                arr[j] = st.nextToken();
             }
-            if(cnt == 3) answer++;
+            Arrays.sort(arr);
 
+            String str = arr[0]+arr[1]+arr[2];
+            
+            if(name.containsKey(str)) {
+                name.put(str, name.get(str)+1);
+                max = Math.max(name.get(str), max);
+            }
+            else {
+                name.put(str, 1);
+            }
         }
-        System.out.println(answer);
+        
+        System.out.println(max);
     }
 }
