@@ -32,9 +32,29 @@ public class Main {
         int B1 = Integer.parseInt(st.nextToken());
         int B2 = Integer.parseInt(st.nextToken());
 
+        // 먼저 같은 주기 찾기
+        int cycleCnt = 0;
+        boolean cycleCheck = false;
+        int[] copy = Arrays.copyOf(nums, N+1);
         for(int i=0;i<K;i++) {
-            nums = solution(N, A1, A2, nums);
-            nums = solution(N, B1, B2, nums);
+            cycleCnt++;
+            copy = solution(N, A1, A2, copy);
+            copy = solution(N, B1, B2, copy);
+
+            if (Arrays.equals(copy, nums)) {
+                cycleCheck = true;
+                break;
+            }
+        }
+
+        nums = Arrays.copyOf(copy, N+1);
+
+        if(cycleCheck) {
+            K %= cycleCnt;
+            for(int i=0;i<K;i++) {
+                nums = solution(N, A1, A2, nums);
+                nums = solution(N, B1, B2, nums);
+            }
         }
 
         for(int i=1; i<=N;i++) {
