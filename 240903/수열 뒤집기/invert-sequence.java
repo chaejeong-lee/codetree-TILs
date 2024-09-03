@@ -17,7 +17,7 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         int N = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(st.nextToken())%4;
+        int K = Integer.parseInt(st.nextToken());
 
         int[] nums = new int[N+1];
         for(int i=1;i<=N;i++) {
