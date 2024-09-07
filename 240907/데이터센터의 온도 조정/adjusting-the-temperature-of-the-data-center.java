@@ -33,7 +33,7 @@ public class Main {
         int temp = 0, maxCnt = 0;
         for (Integer key: hm.keySet()) {
 			int value = hm.get(key);
-            if(value >= maxCnt) {
+            if(value > maxCnt) {
                 temp = key;
                 maxCnt = value;
             }
@@ -43,7 +43,7 @@ public class Main {
         for(int i=0;i<N;i++) {
             if(arr[i][0] > temp) {
                 sum += C;
-            }else if(arr[i][0]<= temp && temp <=arr[i][1]) {
+            }else if(temp <=arr[i][1]) {
                 sum += G;
             }else {
                 sum += H;
