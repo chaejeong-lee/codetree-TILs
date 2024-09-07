@@ -33,7 +33,7 @@ public class Main {
         int temp = 0, maxCnt = 0;
         for (Integer key: hm.keySet()) {
 			int value = hm.get(key);
-            if(value > maxCnt) {
+            if(value >= maxCnt) {
                 temp = key;
                 maxCnt = value;
             }
