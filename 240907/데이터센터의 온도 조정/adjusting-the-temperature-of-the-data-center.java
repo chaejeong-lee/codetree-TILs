@@ -4,8 +4,6 @@ import java.util.*;
 public class Main {
 
     static int N, C, G, H;
-    static int min, max;
-    static int[][] arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,32 +14,42 @@ public class Main {
         G = Integer.parseInt(st.nextToken());
         H = Integer.parseInt(st.nextToken());
 
-        arr = new int[N][2];
+        HashMap<Integer, Integer> hm = new HashMap<>();
+        int[][] arr = new int[N][2];
         for(int i=0;i<N;i++) {
             st = new StringTokenizer(br.readLine());
             arr[i][0] = Integer.parseInt(st.nextToken());
             arr[i][1] = Integer.parseInt(st.nextToken());
-            min = Math.min(min, arr[i][0]);
-            max = Math.max(max, arr[i][1]);
-        }
-
-        int result = 0;
-        for(int i=min; i<=max;i++) {
-            int sum = 0;
-
-            for(int j=0;j<N;j++) {
-                if(i < arr[j][0]) {
-                    sum += C;
-                }
-                else if(arr[j][0] <= i && i <= arr[j][1]) {
-                    sum += G;
+            for(int j = arr[i][0]; j<=arr[i][1];j++) {
+                if(hm.containsKey(j)) {
+                    hm.put(j, hm.get(j) + 1);
                 }
                 else {
-                    sum += H;
+                    hm.put(j, 1);
                 }
             }
-            result = Math.max(sum, result);
         }
-        System.out.println(result);
+
+        int temp = 0, maxCnt = 0;
+        for (Integer key: hm.keySet()) {
+			int value = hm.get(key);
+            if(value > maxCnt) {
+                temp = key;
+                maxCnt = value;
+            }
+		}
+
+        int sum = 0;
+        for(int i=0;i<N;i++) {
+            if(arr[i][0] > temp) {
+                sum += C;
+            }else if(arr[i][0]<= temp && temp <=arr[i][1]) {
+                sum += G;
+            }else {
+                sum += H;
+            }
+        }
+
+        System.out.println(sum);
     }
 }
