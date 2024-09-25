@@ -105,7 +105,9 @@ public class Main {
         // 2. 정렬 위치 값 변경
         map[cr][cc] = idx;
         exit[cr + dr[cd]][cc + dc[cd]] = 1;
-        spirits[idx] = new spiritPoint(cr, cc, cd);
+        spirits[idx].r = cr;
+        spirits[idx].c = cc;
+        spirits[idx].d = cd;
 
         return true;
     }
@@ -151,7 +153,7 @@ public class Main {
     }
 
     private static boolean isPossible(int r, int c) {
-        if(r == -1 || r == 0) return true;
+        if(r <= 0) return true;
         if(r < -1 || c < 0 || r > R || c > C) return false;
         return map[r][c] == 0;
     }
