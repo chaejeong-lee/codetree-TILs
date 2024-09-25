@@ -151,7 +151,7 @@ public class Main {
     }
 
     private static boolean isPossible(int r, int c) {
-        if(r == -1) return true;
+        if(r == -1 || r == 0) return true;
         if(r < -1 || c < 0 || r > R || c > C) return false;
         return map[r][c] == 0;
     }
