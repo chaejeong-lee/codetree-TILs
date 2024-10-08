@@ -99,8 +99,9 @@ public class Main {
 
     // 회전 시 최대 개수인 부분 찾기
     public static void findRotationMax() {
-        int[][] maxMap = new int[MAP_SIZE][MAP_SIZE];
+        // int[][] maxMap = new int[MAP_SIZE][MAP_SIZE];
 
+        int maxR=0, maxC=0;
         int rot = 3;
         int max = 0;
 
@@ -118,14 +119,17 @@ public class Main {
                     if(max < cnt) {
                         max = cnt;
                         rot = r;
-                        maxMap = mapCopy(copyMap);
+                        maxR = j;
+                        maxC = i;
+                        // maxMap = mapCopy(copyMap);
                     }
                     else if(max == cnt) {
                         // rotation 비교
                         if(rot > r) {
-                            max = cnt;
                             rot = r;
-                            maxMap = mapCopy(copyMap);
+                            maxR = j;
+                            maxC = i;
+                            // maxMap = mapCopy(copyMap);
                         }
                     }
                 }
@@ -133,7 +137,11 @@ public class Main {
         }
 
         // mapMap을 map에 넣어주기(회전한 부분을 넣어주는 것)
-        map = mapCopy(maxMap);
+        // map = mapCopy(maxMap);
+
+        for(int r=0;r<=rot;r++) {
+            map = rotation3x3(maxR, maxC, map);
+        }
     }
 
     // 보물 개수 세기
