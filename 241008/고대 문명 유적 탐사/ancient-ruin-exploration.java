@@ -15,6 +15,7 @@ public class Main {
     static int[][] map;
     static Queue<Integer> relicsNumber = new LinkedList<>();
     static Queue<Point> removePoint = new LinkedList<>();
+    static StringBuilder sb = new StringBuilder();
 
     static final int MAP_SIZE = 5;
 
@@ -47,17 +48,19 @@ public class Main {
             getRelics();
         }
 
-        System.out.println(answer);
+        System.out.println(sb);
     }
 
     // 회전 시 최대인 맵에서 유물 획득하기
     public static void getRelics() {
+        answer = 0;
         while(countRelics(map) > 0) {
             // 1. 유물 없애기
             int row = removeRelics();
             // 2. 없어진 마지막 행에서 부터 0열부터 쭈우욱 유물 넣어주기
             addRelics(row);
         }
+        if(answer > 0) sb.append(answer+" ");
     }
 
     // 유물 넣기
