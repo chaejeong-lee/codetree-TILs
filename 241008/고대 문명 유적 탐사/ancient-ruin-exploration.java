@@ -43,28 +43,43 @@ public class Main {
         }
 
         while(K-- > 0) {
-            findRotationMax();
-            getRelics();
+            // System.out.println("K : "+K);
+            if(!findRotationMax()) break; 
+            // mapPrint(map);
+            if(!getRelics()) continue;
         }
 
         System.out.println(sb);
     }
 
     // 회전 시 최대인 맵에서 유물 획득하기
-    public static void getRelics() {
+    public static boolean getRelics() {
         answer = 0;
+        int row = -1;
         while(true) {
             // 1. 유물 없애기
-            int row = removeRelics();
+            row = removeRelics();
+            // mapPrint(map);
+            // System.out.println("answer: " + answer);
             // 2. 없어진 마지막 행에서 부터 0열부터 쭈우욱 유물 넣어주기
             if(row == -1) break;
             addRelics(row);
+            // mapPrint(map);
         }
-        if(answer > 0) sb.append(answer+" ");
+        if(answer > 0) {
+            // System.out.println(answer);
+            sb.append(answer+" ");
+        }
+        
+        if(row == -1) return false;
+        return true;
     }
 
     // 유물 넣기
     public static void addRelics(int row) {
+        // System.out.println("시작");
+        // mapPrint(map);
+        if(row == -1) return;
         for(int j=0;j<MAP_SIZE;j++) {
             for(int i=row; i>=0;i--) {
                 if(map[i][j] == 0) {
@@ -72,6 +87,7 @@ public class Main {
                 }
             }
         }
+        // mapPrint(map);
     }
 
     // 유물 제거하기
@@ -98,8 +114,7 @@ public class Main {
     }
 
     // 회전 시 최대 개수인 부분 찾기
-    public static void findRotationMax() {
-        // int[][] maxMap = new int[MAP_SIZE][MAP_SIZE];
+    public static boolean findRotationMax() {
 
         int maxR=0, maxC=0;
         int rot = 3;
@@ -121,7 +136,6 @@ public class Main {
                         rot = r;
                         maxR = j;
                         maxC = i;
-                        // maxMap = mapCopy(copyMap);
                     }
                     else if(max == cnt) {
                         // rotation 비교
@@ -129,19 +143,17 @@ public class Main {
                             rot = r;
                             maxR = j;
                             maxC = i;
-                            // maxMap = mapCopy(copyMap);
                         }
                     }
                 }
             }
         }
 
-        // mapMap을 map에 넣어주기(회전한 부분을 넣어주는 것)
-        // map = mapCopy(maxMap);
-
+        if(max == 0) return false;
         for(int r=0;r<=rot;r++) {
             map = rotation3x3(maxR, maxC, map);
         }
+        return true;
     }
 
     // 보물 개수 세기
