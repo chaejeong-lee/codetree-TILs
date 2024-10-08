@@ -42,7 +42,6 @@ public class Main {
             relicsNumber.add(Integer.parseInt(st.nextToken()));
         }
 
-        // -------------- 시작!
         while(K-- > 0) {
             findRotationMax();
             getRelics();
@@ -54,10 +53,11 @@ public class Main {
     // 회전 시 최대인 맵에서 유물 획득하기
     public static void getRelics() {
         answer = 0;
-        while(countRelics(map) > 0) {
+        while(true) {
             // 1. 유물 없애기
             int row = removeRelics();
             // 2. 없어진 마지막 행에서 부터 0열부터 쭈우욱 유물 넣어주기
+            if(row == -1) break;
             addRelics(row);
         }
         if(answer > 0) sb.append(answer+" ");
