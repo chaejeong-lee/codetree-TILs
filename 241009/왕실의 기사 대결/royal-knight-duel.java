@@ -14,10 +14,6 @@ public class Main {
             this.k = k;
             this.damage = damage;
         }
-
-        public void changeDamage(int damage) {
-            this.damage = damage;
-        }
     }
 
     static int L, N, Q;
@@ -62,6 +58,7 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             int knightNum = Integer.parseInt(st.nextToken());
             int knightDir = Integer.parseInt(st.nextToken());
+            // System.out.println("  ********  "+(100-Q)+"번째 knightNum: " +knightNum+ " , knightDir: "+knightDir);
 
             // 기사 이동 -> 단 기사가 움직이지 못한 경우....
             boolean[] visited = new boolean[N+1];
@@ -69,7 +66,7 @@ public class Main {
             if(!moveKnight(knightsMap, knightNum, knightDir, visited)) continue;
 
             // 함정 안에 있는 기사들의 체력 데미지!
-            damageKnight(knightsMap, visited);
+            damageKnight(knightsMap, visited, knightNum);
         }
 
         int answer = 0;
@@ -84,13 +81,18 @@ public class Main {
     }
 
     // 기사 데미지
-    public static void damageKnight(int[][] knightsMap, boolean[] visited) {
+    public static void damageKnight(int[][] knightsMap, boolean[] visited, int knightNum) {
         // printMap(knightsMap);
+
+        // for(int i=1;i<=N;i++) System.out.println(visited[i]+" ");
+        // System.out.println();
+
         for(int i=0;i<L;i++) {
             for(int j=0;j<L;j++) {
                 int curNum = knightsMap[i][j];
                 if(curNum == 0 || map[i][j] != 1) continue;
-                if(notAlive[curNum]) continue;
+                if(notAlive[curNum] || curNum == knightNum) continue;
+                if(!visited[curNum]) continue;
 
                 // System.out.println(i+" "+j);
                 knights[curNum].k--;
@@ -113,9 +115,10 @@ public class Main {
             Knight cur = knights[i];
             int r = knights[i].r;
             int c = knights[i].c;
-
+            // System.out.println("cur : " +r+" "+c);
             for(int j=0;j<knights[i].h;j++) {
                 for(int k=0;k<knights[i].w;k++) {
+                    // System.out.println((r+j)+" / "+(c+k));
                     knightsMap[r+j][c+k] = i;
                 }
             }
@@ -126,14 +129,21 @@ public class Main {
         // 밀어낸 애들 visited로 체크해주기
         int moveR = knights[knightNum].r + dr[knightDir];
         int moveC = knights[knightNum].c + dc[knightDir];
+        // System.out.println(knights[knightNum].r+" "+knights[knightNum].c);
+        // System.out.println(moveR+" "+moveC);
         newKnights[knightNum] = new Knight(moveR, moveC, knights[knightNum].h, knights[knightNum].w, knights[knightNum].k, knights[knightNum].damage);
 
+        boolean check = true;
         for(int i=0;i<knights[knightNum].h;i++) {
             for(int j=0;j<knights[knightNum].w;j++) {
-                if(!isRange(moveR+i, moveC+j)) continue;
-
+                if(!isRange(moveR+i, moveC+j)) {
+                    check = false;
+                    continue;
+                }
+                // System.out.println((moveR+i) +" fsdf "+(moveC+j));
                 newKnightsMap[moveR+i][moveC+j] = knightNum;
-
+                
+                if(map[moveR+i][moveC+j] == 2) return false;
                 if(knightsMap[moveR+i][moveC+j] == 0 || knightsMap[moveR+i][moveC+j] == knightNum) continue;
                 else {
                     visited[knightsMap[moveR+i][moveC+j]] = true;
@@ -142,22 +152,33 @@ public class Main {
                 }
             }
         }
+        // System.out.println("cnt: "+cnt);
+        if(cnt == 0) {
+            if(check) knights[knightNum] = new Knight(moveR, moveC, knights[knightNum].h, knights[knightNum].w, knights[knightNum].k, knights[knightNum].damage);
+            return false;
+        }
 
-        if(cnt == 0) return false;
+        // for(Knight knight: knights) {
+        //     if(knight == null) continue;
+        //     System.out.println(knight.r + " "+knight.c +" "+knight.h+" " + knight.w+" ");
+        // }
 
         // 밀어내서 map에 표시하다가 벽을 만나거나
         while(!moveNums.isEmpty()){
             int curNum = moveNums.poll();
-            visited[curNum] = true;
+            // visited[curNum] = true;
 
             int curR = knights[curNum].r + dr[knightDir];
             int curC = knights[curNum].c + dc[knightDir];
+            
+            // System.out.println(curNum+".   knights"+knights[curNum].r+" / "+knights[curNum].c+" cur --> "+curR+" "+curC);
             if(visited[curNum]) {
                 for(int j=0;j<knights[curNum].h;j++) {
                     for(int k=0;k<knights[curNum].w;k++) {
                         int nextR = curR + j;
                         int nextC = curC + k;
-
+                        
+                        // System.out.println(nextR+" "+nextC);
                         if(!isRange(nextR, nextC)) return false;
                         if(map[nextR][nextC] == 2) return false;
 
@@ -165,6 +186,7 @@ public class Main {
 
                         if(!visited[knightsMap[nextR][nextC]] && knightsMap[nextR][nextC] != knightNum && knightsMap[nextR][nextC] != 0) {
                             moveNums.add(knightsMap[nextR][nextC]);
+                            visited[curNum] = true;
                         }
                     }
                 }
@@ -175,6 +197,7 @@ public class Main {
 
         for(int i=1;i<=N;i++) {
             if(!visited[i] && i != knightNum) {
+                newKnights[i] = new Knight(knights[i].r, knights[i].c, knights[i].h, knights[i].w, knights[i].k, knights[i].damage);
                 for(int j=0;j<knights[i].h;j++) {
                     for(int k=0;k<knights[i].w;k++) {
                         int nextR = knights[i].r + j;
@@ -185,13 +208,13 @@ public class Main {
                 }
             }
         }
+        // printMap(newKnightsMap);
 
         for (int i = 1; i <= N; i++) {
-            if (knights[i] == null && newKnights[i] != null) {
-                knights[i] = new Knight(newKnights[i].r, newKnights[i].c, newKnights[i].h, newKnights[i].w, newKnights[i].k, newKnights[i].damage);
-            }
+            knights[i] = newKnights[i];
         }
-
+        // System.out.println("before");
+        // printMap(newKnightsMap);
         copyMap(knightsMap, newKnightsMap);
 
         return true;
