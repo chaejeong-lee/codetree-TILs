@@ -105,7 +105,7 @@ public class Main {
             nextRC[cur].c += dc[dir];
 
             if(nextRC[cur].r < 0 || nextRC[cur].c < 0 || nextRC[cur].r + knights[cur].h - 1 >= L || nextRC[cur].c + knights[cur].w -1 >= L ) continue;
-
+            
             // 대상 조각들이 벽과 충돌 or 장애물과 충돌
             for(int i=nextRC[cur].r; i<nextRC[cur].r + knights[cur].h;i++) {
                 for(int j=nextRC[cur].c;j<nextRC[cur].c + knights[cur].w;j++) {
@@ -118,7 +118,7 @@ public class Main {
             for(int i=1;i<=N;i++) {
                 if(isVisited[i] || knights[i].k <= 0) continue;
                 if(knights[i].r > nextRC[cur].r + knights[cur].h - 1 || nextRC[cur].r > knights[i].r + knights[i].h - 1) continue;
-                if(knights[i].c > nextRC[cur].c + knights[cur].w - 1 || nextRC[cur].c > knights[i].c + knights[i].c - 1) continue;
+                if(knights[i].c > nextRC[cur].c + knights[cur].w - 1 || nextRC[cur].c > knights[i].c + knights[i].w - 1) continue;
                 
                 isVisited[i] = true;
                 q.add(i);
