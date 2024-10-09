@@ -119,6 +119,7 @@ public class Main {
             for(int j=0;j<knights[i].h;j++) {
                 for(int k=0;k<knights[i].w;k++) {
                     // System.out.println((r+j)+" / "+(c+k));
+                    // if(!isRange(r+j, c+l))
                     knightsMap[r+j][c+k] = i;
                 }
             }
@@ -144,7 +145,9 @@ public class Main {
                 newKnightsMap[moveR+i][moveC+j] = knightNum;
                 
                 if(map[moveR+i][moveC+j] == 2) return false;
-                if(knightsMap[moveR+i][moveC+j] == 0 || knightsMap[moveR+i][moveC+j] == knightNum) continue;
+                if(knightsMap[moveR+i][moveC+j] == 0 || knightsMap[moveR+i][moveC+j] == knightNum) {
+                    continue;
+                }
                 else {
                     visited[knightsMap[moveR+i][moveC+j]] = true;
                     moveNums.add(knightsMap[moveR+i][moveC+j]);
@@ -166,7 +169,6 @@ public class Main {
         // 밀어내서 map에 표시하다가 벽을 만나거나
         while(!moveNums.isEmpty()){
             int curNum = moveNums.poll();
-            // visited[curNum] = true;
 
             int curR = knights[curNum].r + dr[knightDir];
             int curC = knights[curNum].c + dc[knightDir];
@@ -186,7 +188,7 @@ public class Main {
 
                         if(!visited[knightsMap[nextR][nextC]] && knightsMap[nextR][nextC] != knightNum && knightsMap[nextR][nextC] != 0) {
                             moveNums.add(knightsMap[nextR][nextC]);
-                            visited[curNum] = true;
+                            visited[knightsMap[nextR][nextC]] = true;
                         }
                     }
                 }
