@@ -91,57 +91,41 @@ public class Main {
 
     // 맵 돌리기
     public static void rotateMaze() {
-        // printMap(info);
-        int nearIdx = 0;
-        int minDist = Integer.MAX_VALUE;
 
-        for(int i=0;i<M;i++) { 
-            int dist = Math.abs(participants[i].r - exit.r) + Math.abs(participants[i].c - exit.c);
-            if(dist != 0 && minDist > dist && !isExit[i]) {
-                nearIdx = i;
-                minDist= dist;
+        for(int len=2;len<=N;len++) {
+            for(int i=0;i<=N-len;i++) {
+                for(int j=0;j<=N-len;j++) {
+                    // 출구가 범위 안에 있는지
+                    if(!(i <= exit.r && exit.r <= i+len-1 && j<= exit.c && exit.c <= j + len -1)) continue;
+
+                    // 참가자 중 이 안에 있으면 돌리기
+                    boolean isIn = false;
+
+                    for(int p=0;p<M;p++) {
+                        if(isExit[p]) continue;
+
+                        if(i<=participants[p].r && participants[p].r <= i+len-1 && j<= participants[p].c && participants[p].c <= j + len-1) {
+                            isIn = true;
+                        }
+                    }
+
+                    if(isIn) {
+                        // 해당 범위 안에 출구와 참가자가 들어온 경우
+                        // System.out.println(i+" " + j +" => "+(i+len-1) +" "+(j+len));
+                        rotatedMaze(i, j, i+len-1, j+len-1, len);
+                        return;
+                    }
+                }
             }
         }
-
-        int maxR = Math.max(participants[nearIdx].r, exit.r);
-        int minR = Math.min(participants[nearIdx].r, exit.r);
-        int maxC = Math.max(participants[nearIdx].c, exit.c);
-        int minC = Math.min(participants[nearIdx].c, exit.c);
-        // System.out.println("min, max => minDist : "+minDist);
-        // System.out.println(minR+" "+minC+" , "+maxR+" "+maxC + " => "+(maxR - minDist) +" "+(maxC - minDist));
-
-        int curR = (maxR-minDist) < 0? 0: maxR - minDist;
-        int curC = (maxC - minDist) < 0 ? 0 : maxC - minDist;
-
-        // System.out.println(curR+" / "+curC+" "+(curR+minDist)+" / "+(curC+minDist));
-        rotatedMaze(curR, curC, curR+minDist, curC+minDist, minDist+1);
-
-        // Point start = new Point(participants[nearIdx].r, participants[nearIdx].c);
-        // int dir = 0;
-        // for(int d = 0; d<4;d++) {
-        //     int nr = exit.r + rotDr[d]*minDist;
-        //     int nc = exit.c + rotDc[d]*minDist;
-
-        //     if(!isRange(nr, nc)) continue;
-        //     else {
-        //         start = new Point(nr, nc);
-        //         dir = d;
-        //         break;
-        //     }
-        // }
-
-        // int startR = Math.min(start.r, exit.r);
-        // int startC = Math.min(start.c, exit.c);
-        // int endR = startR + minDist;
-        // int endC = startC + minDist;
-        // System.out.println(startR+" " + startC + " "+ endR+" "+endC);
-        // rotatedMaze(startR, startC, endR, endC, minDist+1);
+        
     }
 
     // 맵 실제로 돌리기
     public static void rotatedMaze(int startR, int startC, int endR, int endC, int len) {
         // System.out.println("시작점: "+startR +" "+startC + " / 출구점: "+endR+" "+endC+" / len: "+len);
         // System.out.println("출구: "+exit.r+" "+exit.c);
+        // System.out.println(len);
         int[][] copy = new int[len][len];
         
         for(int i=0;i<len;i++) {
@@ -149,17 +133,9 @@ public class Main {
                 copy[i][j] = info[i+startR][j+startC];
             }
         }
-        
-        // 참가자 index에 10 더해서 삽입해주기.
-        for(int i=0;i<M;i++) {
-            if(isExit[i]) continue;
-            if(startR <= participants[i].r && startC <= participants[i].c && participants[i].r <=endR && participants[i].c <= endC) {
-                copy[Math.abs(participants[i].r-startR)][Math.abs(participants[i].c-startC)] = i+10;
-            }
-        }
 
         //출구 삽입
-        copy[Math.abs(exit.r - startR)][Math.abs(exit.c - startC)] = 999;
+        // copy[Math.abs(exit.r - startR)][Math.abs(exit.c - startC)] = 999;
 
         // 맵 돌리고 1이상 9이하면 -1 해주기
         int[][] rotateMap = new int[len][len];
@@ -177,50 +153,63 @@ public class Main {
                 if(0<=rotateMap[i][j] && rotateMap[i][j]<=9){
                     info[mapR][mapC] = rotateMap[i][j];
                 }
-                if(rotateMap[i][j] == 999) {
-                    exit = new Point(mapR, mapC);
-                    info[mapR][mapC] = 0;
-                }
-                if(10<=rotateMap[i][j] && rotateMap[i][j]<=20){
-                    participants[rotateMap[i][j]-10] = new Point(mapR, mapC);
-                    info[mapR][mapC] = 0;
-                }
-                
+                // if(rotateMap[i][j] == 999) {
+                //     exit = new Point(mapR, mapC);
+                //     info[mapR][mapC] = 0;
+                // }               
             }
         }
-        // printMap(rotateMap);
+
+        // 참가자 위치 변경
+        for(int i=0;i<M;i++) {
+            if(isExit[i]) continue;
+            
+            int curR = participants[i].r;
+            int curC = participants[i].c;
+            if(startR <= curR && curR <= endR && startC <= curC && curC <= endC) {
+                // System.out.println(i+". "+curR+" "+curC+" => "+(curC-startC+startR)+" " + (len-curR+startR+startC-1));
+                participants[i] = new Point(curC-startC+startR, len-curR+startR+startC-1);
+            }
+        }
+
+        // 출구 위치 돌리기
+        if(startR <= exit.r && exit.r <= endR && startC<= exit.c && exit.c<= endC) {
+            exit = new Point(exit.c-startC+startR, len-exit.r+startR+startC-1);
+        }
     }
 
     // 참가자들 움직이기
     public static void moveParticipants() {
         boolean[] visited = new boolean[M];
+        // System.out.println("exit: "+exit.r +" "+exit.c);
         
         for(int i=0;i<M;i++) {
             if(isExit[i]) continue;
 
             int curDist = Math.abs(exit.r - participants[i].r) + Math.abs(exit.c - participants[i].c);
+            // System.out.println(i+". "+participants[i].r+" "+participants[i].c);
             for(int d = 0; d<4;d++) {
 
                 int nr = participants[i].r + dr[d];
                 int nc = participants[i].c + dc[d];
 
-                int nDist = Math.abs(exit.r - nr) + Math.abs(exit.c - nc);
-
                 // 범위를 벗어났거나 움직였을 때 
                 if(!isRange(nr,nc)) continue;
                 if(info[nr][nc] != 0) continue;
+
+                int nDist = Math.abs(exit.r - nr) + Math.abs(exit.c - nc);
                 if(curDist <= nDist) continue;
-                participants[i] = new Point(nr, nc);
-                // System.out.println(i+". "+participants[i].r+", "+participants[i].c+" -> "+nr+", "+nc);
+                
                 if(!visited[i]) {
-                    // System.out.println("변경");
                     visited[i] = true;
                     moveCnt++;
-                }
-
-                if(nr == exit.r && nc == exit.c ) {
-                    // System.out.println(i+ " 탈출");
-                    isExit[i] = true;
+                    participants[i] = new Point(nr, nc);
+                    curDist = nDist;
+                    
+                    if(nr == exit.r && nc == exit.c ) {
+                        isExit[i] = true;
+                        break;
+                    }
                 }
             }
         }
