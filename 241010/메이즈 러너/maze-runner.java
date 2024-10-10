@@ -51,8 +51,8 @@ public class Main {
 
         // 초기화
         info = new int[N][N];
-        participants = new Point[N];
-        isExit = new boolean[N];
+        participants = new Point[M];
+        isExit = new boolean[M];
 
         // maze의 벽 내구성 입력
         for(int i=0;i<N;i++) {
