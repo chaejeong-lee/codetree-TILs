@@ -57,7 +57,7 @@ public class Main {
 		}
 		
 		while(curTurn++ != K) {
-//			System.out.println("----------- "+curTurn+"번째 턴 ----------- ");
+			// System.out.println("----------- "+curTurn+"번째 턴 ----------- ");
 			if(!checkTurrets()) break;
 //            for(Point p: turrets) {
 //            	if(p == null) continue;
@@ -80,6 +80,7 @@ public class Main {
 			} else {
 				// 공격 받은 애들 값 출력
 				isTurretAttack[choiceTurret.r][choiceTurret.c] = true;
+				isTurretAttack[attackTurret.r][attackTurret.c] = true;
 				for(Point p: lazerTurrets) {
 					isTurretAttack[p.r][p.c] = true;
 					if(p.r == attackTurret.r && p.c == attackTurret.c) {
@@ -88,7 +89,6 @@ public class Main {
 						map[p.r][p.c] -= choiceTurret.damage/2;
 					}
 					if(map[p.r][p.c]<0) map[p.r][p.c] = 0; 
-					isTurretAttack[p.r][p.c] = true;
 				}
 			}
 			// 3. 포탑 부수기(그냥 0인거 죽이는 거라 무시)
@@ -100,7 +100,8 @@ public class Main {
 					}
 				}
 			}
-//            printMap(map);
+
+            // printMap(map);
 
 		}
 		
@@ -133,7 +134,7 @@ public class Main {
 	}
 	
 	public static void attackBomb(boolean[][] isTurretAttack) {
-//        System.out.println("폭탄으로 공격!");
+        // System.out.println("폭탄으로 공격!");
 		int curR = attackTurret.r;
 		int curC = attackTurret.c;
 		
@@ -148,6 +149,7 @@ public class Main {
 			int nr = (curR + dr[d]<0? N-1:((curR + dr[d])%N));
 			int nc = (curC + dc[d]<0? M-1:((curC + dc[d])%M));
 			isTurretAttack[nr][nc] = true;
+			if(nr == choiceTurret.r && nc == choiceTurret.c) continue;
 			map[nr][nc] = map[nr][nc]-attackDamage<0?0:map[nr][nc]-attackDamage;
 		}
 	}
@@ -290,15 +292,15 @@ public class Main {
 			}
 
 		}
-//		System.out.println("공격자 포탑: "+choiceTurret.toString());
+		// System.out.println("공격자 포탑: "+choiceTurret.toString());
 		
 		choiceTurret.damage += (N+M);
 		map[choiceTurret.r][choiceTurret.c] += (N+M); 
 		choiceTurret.attackTurn = curTurn;
 		turrets[choiceIdx].attackTurn = curTurn;
 		
-//		System.out.println("공격자 포탑 공격과, 대미지 값 변경: "+choiceTurret.toString());
-//		System.out.println("공격 받을 포탑: "+attackTurret.toString());
+		// System.out.println("공격자 포탑 공격과, 대미지 값 변경: "+choiceTurret.toString());
+		// System.out.println("공격 받을 포탑: "+attackTurret.toString());
 	}
 	
 	public static void printMap(int[][] map) {
