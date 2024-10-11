@@ -137,9 +137,11 @@ public class Main {
 		int curR = attackTurret.r;
 		int curC = attackTurret.c;
 		
+		
 		int attackDamage = choiceTurret.damage;
 		map[curR][curC] = (map[curR][curC]-attackDamage<0?0:map[curR][curC]-attackDamage);
 		isTurretAttack[curR][curC] = true;
+		isTurretAttack[choiceTurret.r][choiceTurret.c] = true;
 		
 		attackDamage /= 2;
 		for(int d = 0; d<8;d++) {
@@ -263,8 +265,6 @@ public class Main {
 			}
 			
 			// 2. 같은 경우 attackTurn이 더 큰 경우
-//            System.out.println("attackTurret: "+attackTurret.toString());
-//            System.out.println("attackTurret: "+turrets[i].toString());
 			if(attackTurret.attackTurn < turrets[i].attackTurn) continue;
 			if(attackTurret.attackTurn > turrets[i].attackTurn) {
 //                System.out.println("변경~");
