@@ -43,7 +43,7 @@ public class Main {
 		K = Integer.parseInt(st.nextToken());
 		
 		map = new int[N][M];
-		turrets = new Point[41];
+		turrets = new Point[101];
 		
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
