@@ -23,12 +23,13 @@ public class Main {
 		}
 	}
 	
-	static int N, M, K, curTurn=0;
+	static int N, M, K, curTurn;
 	static int[][] map;
 	static boolean isCheck = false;
-	static List<Point> turrets;
+	static Point[] turrets;
 	static Point choiceTurret, attackTurret;
 	static Queue<Point> lazerTurrets;
+	static int size, choiceIdx;
 	
 	static int[] dr = {0, 1, 0, -1, -1, 1, 1, -1};
 	static int[] dc = {1, 0, -1, 0, 1, 1, -1, -1};
@@ -42,24 +43,27 @@ public class Main {
 		K = Integer.parseInt(st.nextToken());
 		
 		map = new int[N][M];
-		turrets = new ArrayList<>();
+		turrets = new Point[41];
 		
 		for(int i=0;i<N;i++) {
 			st = new StringTokenizer(br.readLine());
 			for(int j=0;j<M;j++) {
 				map[i][j] = Integer.parseInt(st.nextToken());
 				if(map[i][j] != 0) {
-					turrets.add(new Point(i, j, map[i][j], 0));
+					turrets[size] = new Point(i, j, map[i][j], 0);
+					size++;
 				}
 			}
 		}
 		
 		while(curTurn++ != K) {
 //			System.out.println("----------- "+curTurn+"번째 턴 ----------- ");
-			// TODO: 모두 0일 경우에는 종료되어야 함. -> turret을 매번 담아주는 것 필요.(50~51) 줄 여기로 이동
-			checkTurrets();
-			
-			if(turrets.size() == 0) break;
+			if(!checkTurrets()) break;
+//            for(Point p: turrets) {
+//            	if(p == null) continue;
+//                System.out.println(curTurn+" => "+p.toString());
+//            }
+
 			
 			// 1. 공격자 포탑 선정
 			chooseTurret();
@@ -69,6 +73,7 @@ public class Main {
 			// 2-1. 공격자의 공격(레이저 공격, 포탑 공격)
 			// 공격 받은 애들 queue에 담아두기
 			attackLaser();
+
 			boolean[][] isTurretAttack = new boolean[N][M];
 			if(!isCheck) {
 				attackBomb(isTurretAttack);
@@ -95,6 +100,8 @@ public class Main {
 					}
 				}
 			}
+//            printMap(map);
+
 		}
 		
 		int answer = 0;
@@ -106,18 +113,27 @@ public class Main {
 		System.out.println(answer);
 	}
 	
-	public static void checkTurrets() {
-		turrets.clear();
+	public static boolean checkTurrets() {
+		int cnt = 0;
 		for(int i=0;i<N;i++) {
 			for(int j=0;j<M;j++) {
 				if(map[i][j] != 0) {
-					turrets.add(new Point(i, j, map[i][j], 0));
+					cnt++;
+				}
+				for(int t=0;t<size;t++) {
+		        	if(turrets[t] == null) continue;
+					if(turrets[t].r == i && turrets[t].c == j) {
+						turrets[t] = new Point(i, j, map[i][j], turrets[t].attackTurn);
+					}
 				}
 			}
 		}
+
+        return cnt>=2?true:false;
 	}
 	
 	public static void attackBomb(boolean[][] isTurretAttack) {
+//        System.out.println("폭탄으로 공격!");
 		int curR = attackTurret.r;
 		int curC = attackTurret.c;
 		
@@ -147,9 +163,9 @@ public class Main {
 	public static void dfs(int r, int c, boolean[][] visited, Stack<Point> curQ, int depth) {
 		if(lazerTurrets.size() != 0 && lazerTurrets.size() < depth) return;
 		
-//		System.out.println(r+" "+c);
-		if(r == attackTurret.r && c == attackTurret.c) {			
+		if(r == attackTurret.r && c == attackTurret.c) {
 			isCheck = true;
+
 			// 처음 들어왔으면 그냥 배열에 넣어주기
 			if(lazerTurrets.size() == 0) {
 				lazerTurrets.clear();
@@ -184,39 +200,46 @@ public class Main {
 	}
 
 	public static void chooseTurret() {
+		choiceIdx = 0;
 		choiceTurret = new Point(0, 0, 5015, 0);
 		
-		for(int i=0;i<turrets.size();i++) {
+		for(int i=0;i<size;i++) {
+			if(turrets[i] == null) continue;
+			if(turrets[i].damage == 0) continue;
 			// 1. 공격력이 가장 낮은 경우
-			if(choiceTurret.damage < turrets.get(i).damage)continue;
+			if(choiceTurret.damage < turrets[i].damage)continue;
 			
-			if(choiceTurret.damage > turrets.get(i).damage) {
+			if(choiceTurret.damage > turrets[i].damage) {
 //				System.out.println("갱신");
-				choiceTurret = turrets.get(i);
+				choiceTurret = turrets[i];
+				choiceIdx = i;
 				continue;
 			}
 			
 			// 2. 같은 경우 attackTurn이 더 큰 경우
-			if(choiceTurret.attackTurn > turrets.get(i).attackTurn) continue;
-			if(choiceTurret.attackTurn < turrets.get(i).attackTurn) {
-				choiceTurret = turrets.get(i);
+			if(choiceTurret.attackTurn > turrets[i].attackTurn) continue;
+			if(choiceTurret.attackTurn < turrets[i].attackTurn) {
+				choiceTurret = turrets[i];
+				choiceIdx = i;
 				continue;
 			}
 			
 			
 			// 3. 같은 경우 행 + 열 최대인 경우
 			int choiceSum = choiceTurret.r + choiceTurret.c;
-			int turretSum = turrets.get(i).r + turrets.get(i).c;
+			int turretSum = turrets[i].r + turrets[i].c;
 			if(choiceSum > turretSum) continue;
 			if(choiceSum < turretSum) {
-				choiceTurret = turrets.get(i);
+				choiceTurret = turrets[i];
+				choiceIdx = i;
 				continue;
 			}
 			
 			// 4. 같은 경우 열의 위치가 큰 것
-			if(choiceTurret.c > turrets.get(i).c) continue;
-			if(choiceTurret.c < turrets.get(i).c) {
-				choiceTurret = turrets.get(i);
+			if(choiceTurret.c > turrets[i].c) continue;
+			if(choiceTurret.c < turrets[i].c) {
+				choiceTurret = turrets[i];
+				choiceIdx = i;
 				continue;
 			}
 
@@ -224,48 +247,56 @@ public class Main {
 	}
 	
 	public static void chooseAttackTurret() {
-		attackTurret = new Point(0, 0, 0, 0);
+		attackTurret = new Point(0, 0, 0, 1001);
 		
-		for(int i=0;i<turrets.size();i++) {
-			// 1. 공격력이 가장 높은 경우
-			if(attackTurret.damage > turrets.get(i).damage)continue;
+		for(int i=0;i<size;i++) {
+			if(turrets[i] == null) continue;
+			if(turrets[i].damage == 0) continue;
 			
-			if(attackTurret.damage < turrets.get(i).damage) {
+			// 1. 공격력이 가장 높은 경우
+			if(attackTurret.damage > turrets[i].damage) continue;
+			
+			if(attackTurret.damage < turrets[i].damage) {
 //				System.out.println("갱신");
-				
-				attackTurret = turrets.get(i);
+				attackTurret = turrets[i];
 				continue;
 			}
 			
 			// 2. 같은 경우 attackTurn이 더 큰 경우
-			if(attackTurret.attackTurn < turrets.get(i).attackTurn) continue;
-			if(attackTurret.attackTurn > turrets.get(i).attackTurn) {
-				attackTurret = turrets.get(i);
+//            System.out.println("attackTurret: "+attackTurret.toString());
+//            System.out.println("attackTurret: "+turrets[i].toString());
+			if(attackTurret.attackTurn < turrets[i].attackTurn) continue;
+			if(attackTurret.attackTurn > turrets[i].attackTurn) {
+//                System.out.println("변경~");
+				attackTurret = turrets[i];
 				continue;
 			}
 			
 			
 			// 3. 같은 경우 행 + 열 최대인 경우
 			int choiceSum = attackTurret.r + attackTurret.c;
-			int turretSum = turrets.get(i).r + turrets.get(i).c;
+			int turretSum = turrets[i].r + turrets[i].c;
 			if(choiceSum < turretSum) continue;
 			if(choiceSum > turretSum) {
-				attackTurret = turrets.get(i);
+				attackTurret = turrets[i];
 				continue;
 			}
 			
 			// 4. 같은 경우 열의 위치가 큰 것
-			if(attackTurret.c < turrets.get(i).c) continue;
-			if(attackTurret.c > turrets.get(i).c) {
-				attackTurret = turrets.get(i);
+			if(attackTurret.c < turrets[i].c) continue;
+			if(attackTurret.c > turrets[i].c) {
+				attackTurret = turrets[i];
 				continue;
 			}
 
 		}
 //		System.out.println("공격자 포탑: "+choiceTurret.toString());
+		
 		choiceTurret.damage += (N+M);
 		map[choiceTurret.r][choiceTurret.c] += (N+M); 
 		choiceTurret.attackTurn = curTurn;
+		turrets[choiceIdx].attackTurn = curTurn;
+		
 //		System.out.println("공격자 포탑 공격과, 대미지 값 변경: "+choiceTurret.toString());
 //		System.out.println("공격 받을 포탑: "+attackTurret.toString());
 	}
