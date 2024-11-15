@@ -3,7 +3,8 @@ import java.util.*;
 
 public class Main {
 
-    static int N, B;
+    static int N;
+    static long B;
     static int[] bulbs;
         
 
@@ -12,7 +13,7 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
-        B = Integer.parseInt(st.nextToken());
+        B = Long.parseLong(st.nextToken());
 
         bulbs = new int[N];
         for(int i=0;i<N;i++){ 
@@ -46,7 +47,7 @@ public class Main {
 
         if(cycle != -1) {
             int cycleLen = states.size() - cycle;
-            int finalStateIndex = B%cycleLen;
+            int finalStateIndex = (int)(B%cycleLen);
             bulbs = list.get(finalStateIndex);
         }
         
