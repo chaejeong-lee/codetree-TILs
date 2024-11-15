@@ -4,7 +4,8 @@ import java.util.*;
 public class Main {
 
     static int N, B;
-    static boolean[] lights;
+    static int[] bulbs;
+        
 
     public static void main(String[] args) throws IOException {
         // 여기에 코드를 작성해주세요.
@@ -13,58 +14,44 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         B = Integer.parseInt(st.nextToken());
 
-        lights = new boolean[N];
+        bulbs = new int[N];
         for(int i=0;i<N;i++){ 
-            lights[i] = Integer.parseInt(br.readLine())==1?true: false;
+            bulbs[i] = Integer.parseInt(br.readLine());
         }
 
-        // 처음과 동일하게 나오는지 체크
-        int turn = sameTurnCheck();
-        if(turn == B) {
-            for(boolean cur: lights) {
-                System.out.println(cur?1:0);
-            }
-        }
-        else {
-            // turn 횟수 만큼 나눠서 계산
-            B %= turn;
+        HashMap<String, Integer> states = new HashMap<>();
+        List<int[]> list = new ArrayList<>();
+        int cycle = -1;
 
-            while(B-- > 0) {
-                boolean[] curLights = lights.clone();
-                // 왼쪽이 1이면 켜주기
-                for(int i=0;i<N;i++) {
-                    curLights[i] = lights[(i + N-1)%N]? !lights[i]:lights[i];
-                }
-                lights = curLights.clone();
+        for(int step = 0; step < B;step++) {
+            String cur = Arrays.toString(bulbs);
+
+            if(states.containsKey(cur)) {
+                cycle = states.get(cur);
+                break;
             }
 
-            for(boolean cur: lights) {
-                System.out.println(cur?1:0);
-            }
-        }
-    }
+            states.put(cur, step);
+            list.add(bulbs);
 
-    public static int sameTurnCheck() {
-        boolean[] copyLights = lights.clone();
-
-        int turn = 0;
-        while(true) {
-            boolean[] curLights = copyLights.clone();
-            // 왼쪽이 1이면 켜주기
+            int[] newBulbs = bulbs.clone();
             for(int i=0;i<N;i++) {
-                curLights[i] = copyLights[(i + N-1)%N]? !copyLights[i]:copyLights[i];
+                int leftIdx = (i + N - 1) % N;
+                if(bulbs[leftIdx] == 1) {
+                    newBulbs[i] = 1-bulbs[i];
+                }
             }
+            bulbs = newBulbs;
+        }
 
-            copyLights = curLights.clone();
-
-            turn++;
-            if(turn == B) {
-                lights = curLights.clone();
-                return turn;
-            }
-            if(Arrays.equals(copyLights, lights)) break;
+        if(cycle != -1) {
+            int cycleLen = states.size() - cycle;
+            int finalStateIndex = B%cycleLen;
+            bulbs = list.get(finalStateIndex);
         }
         
-        return turn;
+        for(int bulb: bulbs) {
+            System.out.println(bulb);
+        }
     }
 }
