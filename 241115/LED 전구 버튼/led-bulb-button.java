@@ -47,7 +47,7 @@ public class Main {
 
         if(cycle != -1) {
             int cycleLen = states.size() - cycle;
-            int finalStateIndex = (int)(B%cycleLen);
+            int finalStateIndex = (int)((B - cycle) % cycleLen + cycle);
             bulbs = list.get(finalStateIndex);
         }
         
