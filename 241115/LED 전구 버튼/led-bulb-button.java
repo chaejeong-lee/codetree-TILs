@@ -22,13 +22,13 @@ public class Main {
 
         HashMap<String, Integer> states = new HashMap<>();
         List<int[]> list = new ArrayList<>();
-        int cycle = -1;
+        int cycleStart = -1;
 
         for(int step = 0; step < B;step++) {
             String cur = Arrays.toString(bulbs);
 
             if(states.containsKey(cur)) {
-                cycle = states.get(cur);
+                cycleStart = states.get(cur);
                 break;
             }
 
@@ -45,9 +45,9 @@ public class Main {
             bulbs = newBulbs;
         }
 
-        if(cycle != -1) {
-            int cycleLen = states.size() - cycle;
-            int finalStateIndex = (int)(B % cycleLen + cycle);
+        if(cycleStart != -1) {
+            int cycleLen = states.size() - cycleStart;
+            int finalStateIndex = (int)((B - cycleStart) % cycleLen + cycleStart);
             bulbs = list.get(finalStateIndex);
         }
         
