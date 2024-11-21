@@ -40,6 +40,9 @@ public class Main {
                 if(i != 0 && info.get(i-1).infection) {
                     minDist = Math.min(minDist, info.get(i).loc - info.get(i-1).loc-1);
                 }
+                if(i != (N-1) && info.get(i+1).infection) {
+                    minDist = Math.min(minDist, info.get(i+1).loc - info.get(i).loc-1);
+                }
             }
         }
 
