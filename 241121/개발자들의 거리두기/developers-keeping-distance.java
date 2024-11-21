@@ -23,40 +23,34 @@ public class Main {
         StringTokenizer st = null;
 
         int N = Integer.parseInt(br.readLine());
-        Info[] info = new Info[N];
+        List<Info> info = new ArrayList<>();
 
         for(int i=0;i<N;i++) {
             st = new StringTokenizer(br.readLine());
             int loc = Integer.parseInt(st.nextToken());
             int infec = Integer.parseInt(st.nextToken());
-            info[i] = new Info(loc, infec == 1?true:false);
+            info.add(new Info(loc, infec == 1?true:false));
         }
 
-        Arrays.sort(info);
+        Collections.sort(info);
 
-        int cnt = 0;
-        int curCnt = 0;
+        int minDist= Integer.MAX_VALUE;
         for(int i=0;i<N;i++) {
-            if(info[i].infection) {
-                cnt++;
-            }
-            else {
-                if(cnt == 1) {
-                    curCnt++;
+            if(!info.get(i).infection) {
+                if(i != 0 && info.get(i-1).infection) {
+                    minDist = Math.min(minDist, info.get(i).loc - info.get(i-1).loc-1);
                 }
-                else {
-                    curCnt += cnt/2;
-                }
-                cnt = 0;
             }
         }
 
-        if(cnt == 1) {
-            curCnt++;
-        } 
-        else {
-            curCnt += cnt/2;
+        int dist = Integer.MAX_VALUE;
+        int cnt = 0;
+        for(int i=0;i<N;i++) {
+            if(!info.get(i).infection) continue;
+            if(dist + minDist < info.get(i).loc) cnt++;
+            dist = info.get(i).loc;
         }
-        System.out.println(curCnt);
+
+        System.out.println(cnt);
     }
 }
