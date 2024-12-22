@@ -23,7 +23,8 @@ import java.util.*;
 
 public class Main {
 
-    static int N, answer = 1;
+    static int N;
+    static long answer = 1;
     static Integer[] dev, company;
     static boolean[] visited;
 
@@ -47,6 +48,7 @@ public class Main {
         }
 
         Arrays.sort(dev, Comparator.reverseOrder());
+        Arrays.sort(company, Comparator.reverseOrder());
 
         countPossibleSalary();
 
