@@ -67,8 +67,8 @@ public class Main {
     static boolean[][] isGrouped, isDamaged;
     static StringBuilder sb = new StringBuilder();
 
-    static int[] dr = {0, 0, -1, 1};
-    static int[] dc = {-1, 1, 0, 0};
+    static int[] dr = {-1, 1, 0, 0};
+    static int[] dc = {0, 0, -1, 1};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -125,11 +125,10 @@ public class Main {
         }
 
         for(Group g:groups) {
-            int type = findWho(g.getLeader());
-
-            Member leader = g.getLeader();
-
-            g.setLeader(leader);
+            
+            Member leader = g.getLeader(); // 단 한 번만 호출
+            g.setLeader(leader);           // 리더를 고정
+            int type = findWho(leader);   // 리더로 타입 결정
             g.setTypeCode(type);
             g.setTypeCodeSize(leader.hs.size());
 
@@ -207,7 +206,7 @@ public class Main {
             if(member.hs.contains('T'))
                 return 7;
         }
-        return -1;
+        return 0;
     }
 
     public static void evening(List<Group> groups) {
@@ -240,15 +239,14 @@ public class Main {
 
                 if(curType == nextType) continue;
 
-                if(power > target.value) {
+                if (power > target.value) {
                     target.value++;
                     power -= target.value;
                     target.hs.clear();
                     target.hs.addAll(leader.hs);
                     isDamaged[target.r][target.c] = true;
-                }
-                else {
-                    target.hs.addAll(leader.hs);
+                } else {
+                    target.hs.addAll(leader.hs); // 병합
                     target.value += power;
                     isDamaged[target.r][target.c] = true;
                     power = 0;
